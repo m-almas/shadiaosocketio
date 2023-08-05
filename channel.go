@@ -2,13 +2,14 @@ package shadiaosocketio
 
 import (
 	"errors"
-	"github.com/Baiguoshuai1/shadiaosocketio/protocol"
-	"github.com/Baiguoshuai1/shadiaosocketio/utils"
-	"github.com/Baiguoshuai1/shadiaosocketio/websocket"
 	"net"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/Baiguoshuai1/shadiaosocketio/protocol"
+	"github.com/Baiguoshuai1/shadiaosocketio/utils"
+	"github.com/Baiguoshuai1/shadiaosocketio/websocket"
 )
 
 const (
@@ -135,9 +136,7 @@ func closeChannel(c *Channel, m *methods, args ...interface{}) error {
 	c.conn.Close()
 
 	//clean outloop
-	for len(c.out) > 0 {
-		<-c.out
-	}
+	c.out <- protocol.CloseMsg
 
 	m.callLoopEvent(c, OnDisconnection, s...)
 
